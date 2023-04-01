@@ -73,5 +73,30 @@ function renderCauntryList(countries) {
     `
     )
     .join('');
-  countriesList.insertAdjacentElement('beforeend', markup);
+  countriesList.insertAdjacentHTML('beforeend', markup);
+}
+
+function renderCauntryInfo(country) {
+  const markup = `
+    <div class="country-info__flag-wrapper">
+        <img class="country-info__flag" src="${
+          country.flags.svg
+        }" alt="Flag of ${country.name.official}">
+    </div>
+    <div class="country-info__details">
+        <h2 class="country-info__name">${country.name.official}</h2>
+        <p class="country-info__detail"><span class="country-info__detail-label">Capital:</span> ${
+          country.capital
+        }</p>
+        <p class="country-info__detail"><span class="country-info__detail-label">Population:</span> ${country.population.toLocaleString()}</p>
+        <p class="country-info__detail"><span class="country-info__detail-label">Languages:</span> ${country.languages
+          .map(lang => lang.name)
+          .join(', ')}</p>   
+    `;
+  countryInfo.insertAdjacentHTML('beforeend', markup);
+}
+
+function clearResults() {
+  countriesList.innerHTML = '';
+  countryInfo.innerHTML = '';
 }
