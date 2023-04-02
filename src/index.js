@@ -12,12 +12,12 @@ const searchBox = document.querySelector('#search-box');
 countriesList.style.visibility = 'hidden';
 countryInfo.style.visibility = 'hidden';
 
-searchBox.addEventListener('input', debounce(onInputSearch, DEBOUNCE_DELAY));
+searchBox.addEventListener('input', debounce(onSearchBoxInput, DEBOUNCE_DELAY));
 
-function onInputSearch(e) {
-  e.preventDefault();
+function onSearchBoxInput(event) {
+  event.preventDefault();
 
-  const searchCountries = e.target.value.trim();
+  const searchCountries = event.target.value.trim();
 
   if (!searchCountries) {
     countriesList.style.visibility = 'hidden';
@@ -51,18 +51,18 @@ function renderedCountries(result) {
     countriesList.innerHTML = '';
     countriesList.style.visibility = 'hidden';
     countryInfo.style.visibility = 'visible';
-    countryCardMarkup(result);
+    renderCountryInfo(result);
   }
 
   if (inputLetters > 1 && inputLetters <= 10) {
     countryInfo.innerHTML = '';
     countryInfo.style.visibility = 'hidden';
     countriesList.style.visibility = 'visible';
-    countriesListMarkup(result);
+    renderCountryList(result);
   }
 }
 
-function countriesListMarkup(result) {
+function renderCountryList(result) {
   const listMarkup = result
     .map(({ name, flags }) => {
       return /*html*/ `<li>
@@ -75,7 +75,7 @@ function countriesListMarkup(result) {
   return listMarkup;
 }
 
-function countryCardMarkup(result) {
+function renderCountryInfo(result) {
   const cardMarkup = result
     .map(({ flags, name, capital, population, languages }) => {
       languages = Object.values(languages).join(', ');
@@ -90,3 +90,106 @@ function countryCardMarkup(result) {
   countryInfo.innerHTML = cardMarkup;
   return cardMarkup;
 }
+
+// const renderCountryList = countries => {
+//   countryList.innerHTML = '';
+//   if (!countries || countries.length === 0) {
+//     countryList.style.display = 'none';
+//     return;
+//   }
+//   const countryElements = countries.map(country => {
+//     const countryElement = document.createElement('li');
+//     const flagElement = document.createElement('img');
+//     const nameElement = document.createElement('span');
+//     countryElement.classList.add('country-item');
+//     flagElement.classList.add('flag');
+//     if (country.flags && country.flags.svg) {
+//       flagElement.src = country.flags.svg;
+//     } else {
+//       flagElement.src = 'path/to/default/image';
+//     }
+//     flagElement.alt = `${country.name.official} flag`;
+//     nameElement.textContent = country.name.official;
+//     countryElement.appendChild(flagElement);
+//     countryElement.appendChild(nameElement);
+//     return countryElement;
+//   });
+//   const validCountryElements = countryElements.filter(el => el !== null);
+//   if (validCountryElements.length === 0) {
+//     countryList.style.display = 'none';
+//     return;
+//   }
+//   countryList.append(...validCountryElements);
+//   countryList.style.display = 'block';
+// };
+
+// const renderCountryInfo = country => {
+//   countryInfo.innerHTML = '';
+//   if (!country) {
+//     countryInfo.style.display = 'none';
+//     return;
+//   }
+//   const flagElement = document.createElement('img');
+//   const nameElement = document.createElement('h2');
+//   const capitalElement = document.createElement('p');
+//   const populationElement = document.createElement('p');
+//   const languagesElement = document.createElement('ul');
+//   flagElement.classList.add('flag');
+//   flagElement.addEventListener('error', () => {
+//     console.log(`Failed to load flag for ${country.name.common}`);
+//   });
+//   if (country.flags && country.flags.svg) {
+//     flagElement.src = country.flags.svg;
+//   } else {
+//     flagElement.src = 'path/to/default/image';
+//   }
+//   flagElement.alt = `${country.name.official} flag`;
+//   nameElement.textContent = country.name.official;
+//   capitalElement.textContent = `Capital: ${country.capital || '-'}`;
+//   populationElement.textContent = `Population: ${country.population || '-'}`;
+//   const languages = country.languages
+//     ? country.languages
+//         .map(language => {
+//           return `<li>${lang.name}</li>`;
+//         })
+//         .join('')
+//     : '';
+//   languagesElement.innerHTML = `Languages: ${languages}`;
+//   countryInfo.appendChild(flagElement);
+//   countryInfo.appendChild(nameElement);
+//   countryInfo.appendChild(capitalElement);
+//   countryInfo.appendChild(populationElement);
+//   countryInfo.appendChild(languagesElement);
+//   countryInfo.style.display = 'block';
+// };
+
+// const onSearchBoxInput = debounce(async event => {
+//   const query = event.target.value.trim();
+//   if (!query) {
+//     countryList.style.display = 'none';
+//     countryInfo.style.display = 'none';
+//     return;
+//   }
+//   try {
+//     const countries = await fetchCountries(query);
+//     if (countries.length > 10) {
+//       Notiflix.Notify.warning(
+//         'Too many matches found. Please enter a more specific name.'
+//       );
+//       return;
+//     }
+//     renderCountryList(countries);
+//     if (countries.length === 1) {
+//       renderCountryInfo(countries[0]);
+//     } else {
+//       renderCountryInfo(null);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     Notiflix.Notify.failure(
+//       'Oops, something went wrong. Please try again later.'
+//     );
+//   }
+// }, DEBOUNCE_DELAY);
+
+// searchBox.addEventListener('input', onSearchBoxInput);
